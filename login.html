@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKILLNAV - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2E2E2E, #1a1a1a);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+
+        .logo p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+
+        .login-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .login-option {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .login-option.active {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4CAF50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #45a049;
+        }
+
+        .demo-accounts {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .demo-accounts h3 {
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+
+        .demo-account {
+            margin: 5px 0;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>SKILLNAV</h1>
+            <p>Optimize your career journey</p>
+        </div>
+
+        <div class="login-options">
+            <button class="login-option active" onclick="setLoginType('user')">User Login</button>
+            <button class="login-option" onclick="setLoginType('admin')">Admin Login</button>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">Login as User</button>
+        </form>
+
+        <div class="demo-accounts">
+            <h3>Demo Accounts</h3>
+            <div class="demo-account"><strong>User:</strong> user / user123</div>
+            <div class="demo-account"><strong>Admin:</strong> admin / admin123</div>
+        </div>
+    </div>
+
+    <script>
+        let loginType = 'user';
+
+        function setLoginType(type) {
+            loginType = type;
+            document.querySelectorAll('.login-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            document.getElementById('loginBtn').textContent = `Login as ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simple authentication (in real app, this would connect to backend)
+            if (loginType === 'user' && username === 'user' && password === 'user123') {
+                localStorage.setItem('userType', 'user');
+                localStorage.setItem('username', username);
+                window.location.href = 'home.html';
+            } else if (loginType === 'admin' && username === 'admin' && password === 'admin123') {
+                localStorage.setItem('userType', 'admin');
+                localStorage.setItem('username', username);
+                window.location.href = 'home.html';
+            } else {
+                alert('Invalid credentials. Use demo accounts: user/user123 or admin/admin123');
+            }
+        });
+    </script>
+</body>
+</html>

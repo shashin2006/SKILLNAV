@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKILLNAV - Career Domains Roadmap</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #2E2E2E;
+    color: white;
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: #333;
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.navbar a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover, .navbar a.active {
+    background-color: #4CAF50;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #4CAF50;
+}
+
+.header p {
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.domain-selector {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.domain-selector label {
+    display: block;
+    margin-bottom: 15px;
+    color: #ccc;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.domain-selector select {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: black;
+    font-size: 1rem;
+}
+
+.domain-selector select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.domain-info {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    display: none;
+}
+
+.domain-info h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.info-section {
+    margin-bottom: 25px;
+}
+
+.info-section h3 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+.info-section p {
+    color: #ccc;
+    line-height: 1.8;
+}
+
+.info-section ul {
+    color: #ccc;
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+/* Roadmap Styles - FIXED */
+.roadmap-container {
+    margin-top: 30px;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.roadmap-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 600px;
+    position: relative;
+    width: 100%;
+}
+
+.roadmap-level {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* ADDED: Prevents overflow issues */
+    width: 100%;
+    margin-bottom: 40px;
+    position: relative;
+    gap: 20px; /* ADDED: Better spacing between nodes */
+}
+
+.roadmap-node {
+    background: rgba(76, 175, 80, 0.2);
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin: 0 15px;
+    text-align: center;
+    min-width: 200px;
+    max-width: 300px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 2; /* ADDED: Ensure nodes appear above connectors */
+}
+
+.roadmap-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+    background: rgba(76, 175, 80, 0.3);
+}
+
+.node-title {
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.node-content {
+    font-size: 0.9rem;
+    color: #e0e0e0;
+}
+
+.node-duration {
+    display: inline-block;
+    background: rgba(255, 152, 0, 0.3);
+    color: #ff9800;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+/* Connector lines - IMPROVED */
+.level-connector {
+    position: absolute;
+    height: 30px;
+    width: 2px;
+    background: #4CAF50;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1; /* ADDED: Ensure connectors appear below nodes */
+}
+
+.node-connector {
+    position: absolute;
+    width: 2px;
+    background: #4CAF50;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 30px;
+    z-index: 1; /* ADDED: Ensure connectors appear below nodes */
+}
+
+.branch-connector {
+    position: absolute;
+    height: 2px;
+    background: #4CAF50;
+    top: -15px;
+    z-index: 1; /* ADDED: Ensure connectors appear below nodes */
+}
+
+/* Level-specific styling */
+.level-0 .roadmap-node {
+    background: rgba(76, 175, 80, 0.3);
+    border-color: #4CAF50;
+    padding: 20px 25px;
+}
+
+.level-1 .roadmap-node {
+    background: rgba(33, 150, 243, 0.2);
+    border-color: #2196F3;
+}
+
+.level-2 .roadmap-node {
+    background: rgba(156, 39, 176, 0.2);
+    border-color: #9C27B0;
+}
+
+.level-3 .roadmap-node {
+    background: rgba(255, 152, 0, 0.2);
+    border-color: #FF9800;
+}
+
+.level-4 .roadmap-node {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: #F44336;
+}
+
+/* Responsive adjustments - IMPROVED */
+@media (max-width: 768px) {
+    .roadmap-level {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px; /* ADDED: Better spacing on mobile */
+    }
+    
+    .roadmap-node {
+        margin: 10px 0;
+        width: 90%;
+        max-width: none; /* ADDED: Allow full width on mobile */
+    }
+    
+    .branch-connector {
+        display: none;
+    }
+    
+    .level-connector, .node-connector {
+        display: none; 
+    }
+}
+
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    color: #ccc;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="home.html">Home</a>
+        <a href="index.html">Career Path</a>
+        <a href="resume.html">Resume Analysis</a>
+        <a href="domains.html" class="active">Career Domains</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Career Domains Roadmap</h1>
+            <p>Explore various domains in the industry with detailed tree-like roadmaps for your career journey</p>
+        </div>
+
+        <div class="domain-selector">
+            <label for="domainSelect">Choose your domain:</label>
+            <select id="domainSelect" onchange="showDomainInfo()">
+                <option value="">Select a domain</option>
+                <option value="cloud">Cloud Computing</option>
+                <option value="fullstack">Full Stack Technology</option>
+                <option value="cybersecurity">Cybersecurity</option>
+                <option value="ai">AI (ML & DL)</option>
+                <option value="arvr">AR & VR</option>
+                <option value="blockchain">Blockchain Technology</option>
+                <option value="devops">DevOps</option>
+                <option value="mobile">Mobile Application Development</option>
+                <option value="data">Big Data Analytics & Data Science</option>
+            </select>
+        </div>
+
+        <div class="domain-info" id="domainInfo">
+            <!-- Domain information will be displayed here -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Created by Shashin R</p>
+        <p>This application is designed to support college students in enhancing their resumes and preparing for job applications with confidence.</p>
+    </div>
+
+    <script>
+    // Base URL for API calls - use your existing server
+    const API_BASE_URL = 'http://localhost:3000';
+
+    // Your existing domain data stays exactly the same
+    const domainData = {
+        cloud: {
+            title: "Cloud Computing",
+            advantages: "High demand, excellent salary prospects, opportunities for remote work, continuous learning and growth.",
+            disadvantages: "Rapidly changing technology, requires constant upskilling, can be complex with multiple platforms.",
+            skills: "AWS/Azure/GCP, Linux, Networking, Security, Containerization (Docker, Kubernetes), Infrastructure as Code.",
+            projects: "Deploy a web application on cloud, Build a serverless architecture, Create a cloud migration plan.",
+            salary: "₹6-12 LPA for freshers, with experienced professionals earning ₹15-30+ LPA"
+        },
+        fullstack: {
+            title: "Full Stack Technology", 
+            advantages: "Versatile skill set, high employability, ability to work on complete projects, good understanding of both frontend and backend.",
+            disadvantages: "Requires learning multiple technologies, can be overwhelming for beginners, need to stay updated with both frontend and backend trends.",
+            skills: "HTML/CSS/JavaScript, React/Angular/Vue, Node.js/Python/Java, Databases (SQL/NoSQL), REST APIs, Git.",
+            projects: "E-commerce website, Social media application, Project management tool, Blog platform.",
+            salary: "₹4-8 LPA for freshers, with experienced professionals earning ₹10-20+ LPA"
+        },
+        cybersecurity: {
+            title: "Cybersecurity",
+            advantages: "Critical industry need, high job security, competitive salaries, opportunities in various sectors.",
+            disadvantages: "High responsibility and pressure, requires continuous learning, can be stressful dealing with threats.",
+            skills: "Network security, Ethical hacking, Cryptography, Security tools, Risk assessment, Compliance standards.",
+            projects: "Vulnerability assessment report, Security audit, Penetration testing, Security policy development.",
+            salary: "₹5-10 LPA for freshers, with experienced professionals earning ₹15-25+ LPA"
+        },
+        ai: {
+            title: "AI (ML & DL)",
+            advantages: "Cutting-edge technology, high demand, opportunities in various industries, potential for innovation.",
+            disadvantages: "Steep learning curve, requires strong mathematical foundation, can be resource-intensive.",
+            skills: "Python/R, Machine Learning algorithms, Deep Learning frameworks (TensorFlow, PyTorch), Data preprocessing, Statistics.",
+            projects: "Image classification model, Sentiment analysis tool, Recommendation system, Chatbot development.",
+            salary: "₹6-12 LPA for freshers, with experienced professionals earning ₹15-30+ LPA"
+        },
+        arvr: {
+            title: "AR & VR",
+            advantages: "Innovative field, growing market, opportunities in gaming and simulation, creative work.",
+            disadvantages: "Niche market, requires specialized hardware, can be challenging to find resources and support.",
+            skills: "Unity/Unreal Engine, 3D modeling, C#/C++, ARKit/ARCore, UX/UI design, Spatial computing.",
+            projects: "AR mobile app, VR game prototype, 3D environment creation, Interactive training simulation.",
+            salary: "₹5-10 LPA for freshers, with experienced professionals earning ₹12-25+ LPA"
+        },
+        blockchain: {
+            title: "Blockchain Technology",
+            advantages: "High demand, lucrative salaries, opportunities in finance and tech sectors, innovative technology.",
+            disadvantages: "Complex concepts, rapidly evolving field, requires understanding of cryptography and distributed systems.",
+            skills: "Blockchain fundamentals, Smart contracts (Solidity), Cryptography, Decentralized applications (DApps), Ethereum/Hyperledger.",
+            projects: "Cryptocurrency wallet, Smart contract development, Decentralized voting system, Supply chain tracking.",
+            salary: "₹6-12 LPA for freshers, with experienced professionals earning ₹15-30+ LPA"
+        },
+        devops: {
+            title: "DevOps",
+            advantages: "High demand, bridges development and operations, improves deployment speed, fosters collaboration.",
+            disadvantages: "Requires knowledge of multiple tools, can be complex to implement, needs continuous learning.",
+            skills: "CI/CD tools (Jenkins, GitLab), Containerization (Docker, Kubernetes), Cloud platforms (AWS, Azure), Scripting (Bash, Python), Monitoring tools.",
+            projects: "Automated deployment pipeline, Infrastructure as Code setup, Containerized application deployment, Monitoring dashboard.",
+            salary: "₹5-10 LPA for freshers, with experienced professionals earning ₹12-25+ LPA"
+        },
+        mobile: {
+            title: "Mobile Application Development",
+            advantages: "High demand, creative work, opportunities in various industries, ability to reach a wide audience.",
+            disadvantages: "Requires knowledge of multiple platforms, can be competitive, needs to stay updated with platform changes.",
+            skills: "Swift/Objective-C (iOS), Kotlin/Java (Android), React Native/Flutter, UI/UX design, APIs, App Store guidelines.",
+            projects: "To-do list app, Weather app, Social media app, E-commerce app.",
+            salary: "₹4-8 LPA for freshers, with experienced professionals earning ₹10-20+ LPA"
+        },
+        data: {
+            title: "Big Data Analytics & Data Science",
+            advantages: "High demand, lucrative salaries, opportunities in various sectors, potential for impactful insights.",
+            disadvantages: "Requires strong analytical skills, can be complex to handle large datasets, needs continuous learning.",
+            skills: "Python/R, SQL/NoSQL databases, Data visualization (Tableau, Power BI), Machine Learning, Big Data tools (Hadoop, Spark).",
+            projects: "Customer segmentation analysis, Sales forecasting model, Data visualization dashboard, Sentiment analysis on social media data.",
+            salary: "₹6-12 LPA for freshers, with experienced professionals earning ₹15-30+ LPA"
+        }
+    };
+
+    async function showDomainInfo() {
+        const select = document.getElementById('domainSelect');
+        const domainInfo = document.getElementById('domainInfo');
+        const selectedDomain = select.value;
+
+        if (selectedDomain && domainData[selectedDomain]) {
+            const data = domainData[selectedDomain];
+            
+            // Show basic info immediately
+            domainInfo.innerHTML = `
+                <h2>${data.title}</h2>
+                <div class="info-section">
+                    <h3>Advantages</h3>
+                    <p>${data.advantages}</p>
+                </div>
+                <div class="info-section">
+                    <h3>Disadvantages</h3>
+                    <p>${data.disadvantages}</p>
+                </div>
+                <div class="info-section">
+                    <h3>Skills Required</h3>
+                    <p>${data.skills}</p>
+                </div>
+                <div class="info-section">
+                    <h3>Project Suggestions</h3>
+                    <p>${data.projects}</p>
+                </div>
+                <div class="info-section">
+                    <h3>Initial Salary Range</h3>
+                    <p>${data.salary}</p>
+                </div>
+                <div class="roadmap-container">
+                    <h3 style="color: #4CAF50; text-align: center; margin-bottom: 20px;">AI-Generated Career Roadmap</h3>
+                    <div class="loading" id="roadmapLoading">
+                        <div class="loading-spinner"></div>
+                        <p>Generating AI-powered roadmap... This may take a moment.</p>
+                    </div>
+                    <div class="roadmap-tree" id="roadmapTree" style="display: none;">
+                        <!-- Roadmap will be loaded here -->
+                    </div>
+                </div>
+            `;
+            domainInfo.style.display = 'block';
+
+            // Show loading and generate AI roadmap
+            document.getElementById('roadmapLoading').style.display = 'block';
+            document.getElementById('roadmapTree').style.display = 'none';
+
+            // Generate AI roadmap
+            await generateAIRoadmap(selectedDomain);
+        } else {
+            domainInfo.style.display = 'none';
+        }
+    }
+
+    async function generateAIRoadmap(domain) {
+        try {
+            const response = await fetch(API_BASE_URL + '/api/generate-roadmap', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    domain: domainData[domain].title
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Hide loading
+            document.getElementById('roadmapLoading').style.display = 'none';
+            document.getElementById('roadmapTree').style.display = 'block';
+
+            if (data.success) {
+                document.getElementById('roadmapTree').innerHTML = generateRoadmapHTML(data.roadmap);
+            } else {
+                document.getElementById('roadmapTree').innerHTML = `
+                    <div style="text-align: center; color: #f44336; padding: 20px;">
+                        ❌ Failed to generate roadmap: ${data.error}
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error generating roadmap:', error);
+            document.getElementById('roadmapLoading').style.display = 'none';
+            document.getElementById('roadmapTree').innerHTML = `
+                <div style="text-align: center; color: #f44336; padding: 20px;">
+                    ❌ Error generating roadmap: ${error.message}
+                </div>
+            `;
+            document.getElementById('roadmapTree').style.display = 'block';
+        }
+    }
+
+    function generateRoadmapHTML(roadmap) {
+        let html = '';
+        
+        roadmap.forEach((levelData, levelIndex) => {
+            html += `
+                <div class="roadmap-level level-${levelIndex}">
+                    <h4 style="color: #4CAF50; margin-bottom: 15px; text-align: center;">${levelData.title}</h4>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+            `;
+            
+            levelData.nodes.forEach((node, nodeIndex) => {
+                html += `
+                    <div class="roadmap-node">
+                        <div class="node-connector"></div>
+                        <div class="node-title">${node.title}</div>
+                        <div class="node-content">${node.content}</div>
+                        <div class="node-duration">${node.duration}</div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                    ${levelIndex < roadmap.length - 1 ? '<div class="level-connector"></div>' : ''}
+                </div>
+            `;
+        });
+        
+        return html;
+    }
+
+    // Check authentication
+    window.onload = function() {
+        const userType = localStorage.getItem('userType');
+        if (!userType) {
+            window.location.href = 'login.html';
+        }
+    };
+</script>
+</body>
+</html>
